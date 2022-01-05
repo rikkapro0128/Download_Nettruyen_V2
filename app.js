@@ -1,9 +1,6 @@
 import axios from "axios";
 import fs from "fs";
 import cheerio from "cheerio";
-import { resolve } from "path";
-import { throws } from "assert";
-import { Stream } from "stream";
 
 const urlDemo = 'http://www.nettruyengo.com/truyen-tranh/nai-ba-la-chien-than-manh-nhat-43048';
 
