@@ -2,7 +2,7 @@ import axios from "axios";
 import fs from "fs";
 import cheerio from "cheerio";
 
-const urlDemo = 'http://www.nettruyengo.com/truyen-tranh/nai-ba-la-chien-than-manh-nhat-43048';
+const urlDemo = 'http://www.nettruyengo.com/truyen-tranh/toan-chuc-phap-su-17023';
 
 function removeAccents(str) {
   /*
@@ -95,17 +95,20 @@ async function handleOBJ(target) {
 
 function analysisURL(URL) {
   return new Promise(async (resolve, reject) => {
-    await axios.get(URL, {
+    await axios({
+      method: 'get',
+      url: URL,
+      responseType: 'document',
       headers: {
         'Referer': 'http://www.nettruyengo.com/' // tag header important to void reuest failure (403)
       },
-      responseType: 'document',
+      timeout: 2000,
     })
-    .then((response) => {
+    .then(function (response) {
       resolve(response.data)
     })
-    .catch((error) => {
-      reject({ code: error.response.status, message: error.response.statusText });
+    .catch(function (error) {
+      reject(error);
     })
   })
 }
@@ -131,10 +134,14 @@ function analysisDocumentToTarget(HTML) {
       const linkChapter = cheerio.load(element)('div.chapter a').attr('href');
       this.push({ chapter: number_chapter[0], link: linkChapter, title: title_chapter });
     }.bind(dataChapter))
-    for (let [index, chapter] of dataChapter.entries()) {
-      const loadDOM = cheerio.load(await analysisURL(chapter.link));
-      const allImages = loadDOM('.page-chapter img[data-index]').map(function (i, el) { return $(this).attr('src') }).toArray();
-      dataChapter[index].images = allImages;
+    for await (const [index, chapter] of dataChapter.entries()) {
+      try {
+        const loadDOM = cheerio.load(await analysisURL(chapter.link));
+        const allImages = loadDOM('.page-chapter img[data-index]').map(function (i, el) { return $(this).attr('src') }).toArray();
+        dataChapter[index].images = allImages;
+      } catch (error) {
+        continue;
+      }
     }
     resolve({ nameManga, nameOther, author, genres, desc, cover, data: dataChapter });
   })
