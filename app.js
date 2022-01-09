@@ -1,13 +1,11 @@
 import fs from 'fs';
-// import { WebSocketServer } from 'ws';
+
 import {
   handleOBJ,
   analysisURL,
   removeAccents,
   analysisDocumentToTarget,
 } from './helper.js';
-
-// const wss = new WebSocketServer({ port: 3300 });
 
 const urlManga = 'http://www.nettruyengo.com/truyen-tranh/quai-vat-khong-ten-25197';
 
@@ -37,11 +35,3 @@ const urlManga = 'http://www.nettruyengo.com/truyen-tranh/quai-vat-khong-ten-251
     return false;
   }
 })()
-
-// wss.on('connection', function connection(ws) {
-//   console.log('>>> Client is has been connected!');
-//   ws.on('message', async function(data) {
-//     const { linkManga } = JSON.parse(data);
-//     await downloadByURL(linkManga);
-//   })
-// });
