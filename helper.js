@@ -23,7 +23,7 @@ async function download(url, folder) {
     and save image depend on by url and folder 
   */ 
   return new Promise(async (resolve, reject) => {
-    // await delay(1000);
+    await delay(1000);
     await axios({
       method: 'get',
       url,

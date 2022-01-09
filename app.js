@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { WebSocketServer } from 'ws';
+// import { WebSocketServer } from 'ws';
 import {
   handleOBJ,
   analysisURL,
@@ -7,11 +7,11 @@ import {
   analysisDocumentToTarget,
 } from './helper.js';
 
-const wss = new WebSocketServer({ port: 3300 });
+// const wss = new WebSocketServer({ port: 3300 });
 
-// const urlDemo = 'http://www.nettruyengo.com/truyen-tranh/please-go-home-akutsu-san-28862';
+const urlManga = 'http://www.nettruyengo.com/truyen-tranh/quai-vat-khong-ten-25197';
 
-async function downloadByURL (urlManga) {
+(async () => {
   const rootPath = 'E:/';
   const nameSaveTarget = 'information';
   try {
@@ -36,12 +36,12 @@ async function downloadByURL (urlManga) {
     console.log(error);
     return false;
   }
-}
+})()
 
-wss.on('connection', function connection(ws) {
-  console.log('>>> Client is has been connected!');
-  ws.on('message', async function(data) {
-    const { linkManga } = JSON.parse(data);
-    await downloadByURL(linkManga);
-  })
-});
+// wss.on('connection', function connection(ws) {
+//   console.log('>>> Client is has been connected!');
+//   ws.on('message', async function(data) {
+//     const { linkManga } = JSON.parse(data);
+//     await downloadByURL(linkManga);
+//   })
+// });
