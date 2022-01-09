@@ -11,19 +11,28 @@ function removeAccents(str) {
   .replace(/đ/g, 'd').replace(/Đ/g, 'D');
 }
 
+function delay(ms) {
+  return new Promise(res => {
+    setTimeout(res(true), ms);
+  })
+}
+
 async function download(url, folder) {
   /*
     handle request to image and download this image
     and save image depend on by url and folder 
   */ 
   return new Promise(async (resolve, reject) => {
+    // await delay(1000);
     await axios({
       method: 'get',
       url,
       responseType: 'stream',
       headers: {
         'Referer': 'http://www.nettruyengo.com/', // tag header important to void reuest failure (403)
-        'Connection': 'keep-alive'
+        'Connection': 'keep-alive',
+        'Accept': 'image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
+        'Accept-Encoding': 'gzip, deflate'
       }
     })
     .then(function (response) {
@@ -91,6 +100,9 @@ async function handleOBJ(target, rootPathSave) {
 }
 
 function analysisURL(URL) {
+  /*
+    request to URL and resovle response HTML document
+  */ 
   return new Promise(async (resolve, reject) => {
     await axios({
       method: 'get',
@@ -112,6 +124,9 @@ function analysisURL(URL) {
 }
 
 function analysisDocumentToTarget(HTML) {
+  /*
+    analys HTMl to Object JSON
+  */ 
   return new Promise(async (resolve, reject) => {
     if(!HTML) { reject(new Error('No import HTML to Function')) }
     const $ = cheerio.load(HTML);

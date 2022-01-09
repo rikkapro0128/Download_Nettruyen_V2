@@ -13,6 +13,9 @@
   "dependencies": {
     "axios": "^0.24.0",
     "cheerio": "^1.0.0-rc.10",
-    "express": "^4.17.2"
+    "cors": "^2.8.5",
+    "express": "^4.17.2",
+    "socket.io": "^4.4.0",
+    "ws": "^8.4.0"
   }
 }

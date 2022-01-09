@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { WebSocketServer } from 'ws';
 import {
   handleOBJ,
   analysisURL,
@@ -6,17 +7,20 @@ import {
   analysisDocumentToTarget,
 } from './helper.js';
 
-const urlDemo = 'http://www.nettruyengo.com/truyen-tranh/co-nang-cuong-tinh-nanase-55854';
+const wss = new WebSocketServer({ port: 3300 });
 
-(async () => {
+// const urlDemo = 'http://www.nettruyengo.com/truyen-tranh/please-go-home-akutsu-san-28862';
+
+async function downloadByURL (urlManga) {
   const rootPath = 'E:/';
   const nameSaveTarget = 'information';
   try {
     console.time('>>> CRAWL TOTAL TIME');
     console.time('>>> DOWNLOAD TOTAL TIME');
     console.log('>>> Crawling from website...');
-    const document = await analysisURL(urlDemo);
+    const document = await analysisURL(urlManga);
     const target = await analysisDocumentToTarget(document);
+    target.data = target.data.reverse();
     const parserTargetToJSON = JSON.stringify(target);
     console.timeEnd('>>> CRAWL TOTAL TIME');
     console.log('>>> Start download file...\n');
@@ -27,7 +31,17 @@ const urlDemo = 'http://www.nettruyengo.com/truyen-tranh/co-nang-cuong-tinh-nana
     fs.writeFileSync(`${pathSaveFile}/desc.json`, parserTargetToJSON, { mode: 777 });
     console.log('>>> Saved File!');
     console.timeEnd('>>> DOWNLOAD TOTAL TIME');
+    return true;
   } catch (error) {
     console.log(error);
+    return false;
   }
-})()
+}
+
+wss.on('connection', function connection(ws) {
+  console.log('>>> Client is has been connected!');
+  ws.on('message', async function(data) {
+    const { linkManga } = JSON.parse(data);
+    await downloadByURL(linkManga);
+  })
+});
